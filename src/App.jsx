@@ -6,9 +6,7 @@ function App() {
     <div className="overflow-y-scroll flex flex-col text-4xl text-white bg-black w-full h-full items-center">
       <h1 className="py-10">Manager de Taches</h1>
     <Task/>
-    {/* editer les taches */}
-    {/* // supprimer taches */}
-    </div>
+    </div> //TODO: DRAG and drop a faire
   );
 }
 
