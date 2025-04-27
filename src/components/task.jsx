@@ -1,33 +1,37 @@
 import { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import TaskItem from "./taskItem";
+import TaskItem from "./taskItem"; 
 
 function Task() {
   const [tasks, setTasks] = useState([]);
 
+  // Ajoute une nouvelle tâche
   const handleSubmit = (e) => {
     e.preventDefault();
-    const usedTask = e.target[0].value.trim();
-    if (!tasks.includes(usedTask)) {
-      setTasks([...tasks, usedTask]);
+    const newTask = e.target[0].value.trim();
+    if (newTask && !tasks.includes(newTask)) {
+      setTasks([...tasks, newTask]);
     }
     e.target[0].value = "";
   };
 
-  const handleEdit = (displayTask) => {
-    document.querySelector("#champ").value = displayTask;
-    setTasks(tasks.filter((item) => item !== displayTask));
+  // Edition des tâches
+  const handleEdit = (taskToEdit) => {
+    document.querySelector("#champ").value = taskToEdit;
+    setTasks(tasks.filter((task) => task !== taskToEdit));
   };
 
-  const handleDelete = (displayTask) => {
-    setTasks(tasks.filter((item) => item !== displayTask));
+  // Supprimer une tâche
+  const handleDelete = (taskToDelete) => {
+    setTasks(tasks.filter((task) => task !== taskToDelete));
   };
 
+ 
   const moveItem = (fromIndex, toIndex) => {
     const updatedTasks = [...tasks];
-    const [movedTask] = updatedTasks.splice(fromIndex, 1);
-    updatedTasks.splice(toIndex, 0, movedTask);
+    const [movedTask] = updatedTasks.splice(fromIndex, 1); 
+    updatedTasks.splice(toIndex, 0, movedTask); 
     setTasks(updatedTasks);
   };
 
@@ -35,26 +39,28 @@ function Task() {
     <DndProvider backend={HTML5Backend}>
       <form
         onSubmit={handleSubmit}
-        className="flex relative text-white font-bold text-xl bg-blue-600 rounded-2xl mt-5 h-10 w-1/2 pl-4 py-1 justify-between items-center"
+        className="flex relative text-white font-bold text-xl bg-blue-600 rounded-2xl mt-5 h-10 w-1/2 pl-4 py-1 justify-between items-center mx-auto"
       >
         <input
           id="champ"
-          focus="true"
           type="text"
           className="resize-none h-full flex w-7/8 bg-transparent outline-none"
-        ></input>
+          placeholder="Ajouter une tâche..."
+        />
         <button className="cursor-pointer absolute rotate-90 text-4xl center right-0 w-12 h-12">
           +
         </button>
       </form>
-      <div className="flex flex-col text-white font-bold text-2xl mt-20 w-1/2">
+
+      
+      <div className="flex flex-col text-white font-bold text-2xl mt-10 w-1/2 mx-auto">
         {tasks.map((task, index) => (
           <TaskItem
             key={index}
             index={index}
             task={task}
             moveItem={moveItem}
-            handleEdit={handleEdit}
+            handleEdit={handleEdit} 
             handleDelete={handleDelete}
           />
         ))}
