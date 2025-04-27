@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import TaskItem from "./taskItem";
 
 function Task() {
   const [tasks, setTasks] = useState([]);
 
-  const handleSubmit = (e) => { // Nettoyer, eviter les doublons, ajouter la tache, vider le champ
+  const handleSubmit = (e) => {
     e.preventDefault();
     const usedTask = e.target[0].value.trim();
     if (!tasks.includes(usedTask)) {
@@ -12,17 +15,24 @@ function Task() {
     e.target[0].value = "";
   };
 
-  const handleEdit = (displayTask) => { // remplir le champ, supprimer la tache
+  const handleEdit = (displayTask) => {
     document.querySelector("#champ").value = displayTask;
-    setTasks(tasks.filter(item => item !== displayTask))
+    setTasks(tasks.filter((item) => item !== displayTask));
   };
 
-  const handleDelete = (displayTask) => { //supprimer la tache uniquement
-    setTasks(tasks.filter(item => item !== displayTask))
+  const handleDelete = (displayTask) => {
+    setTasks(tasks.filter((item) => item !== displayTask));
+  };
+
+  const moveItem = (fromIndex, toIndex) => {
+    const updatedTasks = [...tasks];
+    const [movedTask] = updatedTasks.splice(fromIndex, 1);
+    updatedTasks.splice(toIndex, 0, movedTask);
+    setTasks(updatedTasks);
   };
 
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <form
         onSubmit={handleSubmit}
         className="flex relative text-white font-bold text-xl bg-blue-600 rounded-2xl mt-5 h-10 w-1/2 pl-4 py-1 justify-between items-center"
@@ -38,21 +48,19 @@ function Task() {
         </button>
       </form>
       <div className="flex flex-col text-white font-bold text-2xl mt-20 w-1/2">
-        {tasks.map((displayTask, index) => (
-          <div
+        {tasks.map((task, index) => (
+          <TaskItem
             key={index}
-            className="flex text-xl bg-blue-600 rounded-2xl mt-5 h-10 w-full pl-4 pr-4 justify-start items-center"
-          >
-            <h1 className="w-2/3 overflow-x-hidden">{displayTask}</h1>
-            <div className="flex w-1/3 gap-4 justify-end">
-              <button className="cursor-pointer" onClick={() => handleEdit(displayTask)}>EDIT</button>
-              <button className="cursor-pointer" onClick={() => handleDelete(displayTask)}>DELETE</button>
-            </div>
-          </div>
+            index={index}
+            task={task}
+            moveItem={moveItem}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         ))}
       </div>
-    </>
+    </DndProvider>
   );
 }
+
 export default Task;
-//
